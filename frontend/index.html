@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Multimodal AI Assistant — Chat, Voice, Vision powered by advanced LLMs" />
+  <title>AI Assistant</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div id="app">
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" title="AI Assistant">AI</div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-panel="chat" id="nav-chat">
+        💬
+        <span class="tooltip">Chat</span>
+      </button>
+      <button class="nav-btn" data-panel="voice" id="nav-voice">
+        🎙️
+        <span class="tooltip">Voice</span>
+      </button>
+      <button class="nav-btn" data-panel="vision" id="nav-vision">
+        👁️
+        <span class="tooltip">Vision</span>
+      </button>
+      <button class="nav-btn" data-panel="settings" id="nav-settings">
+        ⚙️
+        <span class="tooltip">Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="status-dot" id="health-dot" title="Backend status"></div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="main-content">
+    <!-- ---- Header ---- -->
+    <header class="header">
+      <div class="header-left">
+        <div>
+          <div class="header-title" id="header-title">Chat</div>
+          <div class="header-subtitle" id="header-subtitle">Session: —</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="header-badge" id="provider-badge">—</span>
+      </div>
+    </header>
+
+    <!-- ---- Panel Container ---- -->
+    <div class="panel-container">
+
+      <!-- ======================== CHAT PANEL ======================== -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-panel">
+          <!-- Sessions Sidebar -->
+          <div class="sessions-sidebar">
+            <div class="sessions-header">
+              <button class="new-session-btn" id="new-session-btn">➕ New Session</button>
+            </div>
+            <div class="sessions-list" id="sessions-list"></div>
+          </div>
+
+          <!-- Chat Area -->
+          <div class="chat-area">
+            <!-- Welcome (shown when no messages) -->
+            <div class="welcome-screen" id="welcome-screen">
+              <div class="welcome-icon">🤖</div>
+              <h1 class="welcome-title">Multimodal AI Assistant</h1>
+              <p class="welcome-subtitle">Chat with advanced LLMs, use voice commands, analyze images, and more — all in one place.</p>
+              <div class="welcome-features">
+                <div class="feature-card">
+                  <div class="feature-card-icon">💬</div>
+                  <div class="feature-card-title">Smart Chat</div>
+                  <div class="feature-card-desc">Real-time streaming with tool support</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-icon">🎙️</div>
+                  <div class="feature-card-title">Voice I/O</div>
+                  <div class="feature-card-desc">Speech-to-text & text-to-speech</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-icon">👁️</div>
+                  <div class="feature-card-title">Vision</div>
+                  <div class="feature-card-desc">Image analysis with multimodal LLMs</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-icon">🛡️</div>
+                  <div class="feature-card-title">Safety</div>
+                  <div class="feature-card-desc">Built-in jailbreak prevention</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="messages-container" id="messages-container" style="display:none;"></div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-wrapper">
+              <div class="chat-input-container">
+                <div class="input-actions">
+                  <button class="input-action-btn" id="btn-attach-image" title="Attach image">🖼️</button>
+                </div>
+                <textarea class="chat-input" id="chat-input" placeholder="Type a message…" rows="1"></textarea>
+                <button class="send-btn" id="send-btn" title="Send message">➤</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== VOICE PANEL ======================== -->
+      <div class="panel" id="panel-voice">
+        <div class="voice-panel">
+          <div class="section-label">Speech-to-Text</div>
+
+          <div class="voice-visualizer" id="voice-visualizer">
+            <span class="voice-icon" id="voice-icon">🎙️</span>
+          </div>
+
+          <div class="voice-bars" id="voice-bars"></div>
+
+          <div class="voice-controls">
+            <button class="voice-btn record" id="btn-record" title="Hold to record">🎙️</button>
+            <button class="voice-btn play" id="btn-play-recording" title="Play recording" disabled>▶️</button>
+          </div>
+
+          <div class="voice-status" id="voice-status">
+            <div class="label">Ready</div>
+            <div>Press the microphone to start recording</div>
+          </div>
+
+          <div class="voice-transcript" id="voice-transcript" style="display:none;">
+            <div class="voice-transcript-label">Transcription</div>
+            <div class="voice-transcript-text" id="transcript-text"></div>
+          </div>
+
+          <div class="divider">Text-to-Speech</div>
+
+          <div class="tts-section">
+            <div class="tts-input-group">
+              <input type="text" class="tts-input" id="tts-input" placeholder="Enter text to convert to speech…" />
+              <button class="tts-btn" id="btn-tts">🔊 Speak</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== VISION PANEL ======================== -->
+      <div class="panel" id="panel-vision">
+        <div class="vision-panel">
+          <!-- Left: Upload & Analysis -->
+          <div class="vision-left">
+            <div class="section-label">Image Analysis</div>
+
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="upload-zone">
+              <input type="file" id="vision-file-input" accept="image/*" hidden />
+              <div class="upload-zone-icon">📷</div>
+              <div class="upload-zone-text">Drop an image here or click to upload</div>
+              <div class="upload-zone-hint">Supports JPG, PNG, GIF, WebP</div>
+            </div>
+
+            <!-- Image Preview -->
+            <div class="image-preview-container" id="image-preview-container" style="display:none;">
+              <img id="image-preview" alt="Uploaded image preview" />
+              <button class="image-preview-remove" id="image-preview-remove" title="Remove image">✕</button>
+            </div>
+
+            <!-- URL Input -->
+            <div class="divider">OR enter image URL</div>
+            <div class="vision-url-group">
+              <input type="url" class="vision-url-input" id="vision-url-input" placeholder="https://example.com/image.jpg" />
+            </div>
+
+            <!-- Prompt -->
+            <div class="vision-prompt-group">
+              <label class="section-label">Prompt</label>
+              <textarea class="vision-prompt-input" id="vision-prompt" placeholder="What do you want to know about this image?">Describe this image in detail.</textarea>
+            </div>
+
+            <button class="vision-analyze-btn" id="btn-analyze">🔍 Analyze Image</button>
+
+            <!-- Response -->
+            <div class="vision-response" id="vision-response" style="display:none;">
+              <div class="vision-response-header">✨ Analysis Result</div>
+              <div class="vision-response-text" id="vision-response-text"></div>
+            </div>
+          </div>
+
+          <!-- Right: Camera Feed -->
+          <div class="vision-right">
+            <div class="camera-section">
+              <div class="camera-header">
+                <div class="camera-header-title">📹 Live Camera</div>
+              </div>
+              <div class="camera-feed" id="camera-feed">
+                <div class="no-camera" id="no-camera-msg">
+                  <p>📷</p>
+                  <p>Camera feed inactive</p>
+                  <p style="margin-top:8px;font-size:12px;color:var(--text-muted);">Click "Start Feed" to begin streaming</p>
+                </div>
+                <img id="camera-stream" style="display:none;" alt="Live camera feed" />
+              </div>
+              <div class="camera-controls">
+                <button class="camera-btn" id="btn-start-camera">▶️ Start Feed</button>
+                <button class="camera-btn" id="btn-snapshot">📸 Snapshot</button>
+                <button class="camera-btn" id="btn-use-snapshot">🔍 Analyze Snapshot</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== SETTINGS PANEL ======================== -->
+      <div class="panel" id="panel-settings">
+        <div class="settings-panel">
+          <!-- Health Status -->
+          <div class="settings-section">
+            <div class="settings-section-title">💚 Server Health</div>
+            <div class="health-grid">
+              <div class="health-card">
+                <div class="health-card-value" id="health-status">—</div>
+                <div class="health-card-label">Status</div>
+              </div>
+              <div class="health-card">
+                <div class="health-card-value" id="health-provider">—</div>
+                <div class="health-card-label">LLM Provider</div>
+              </div>
+              <div class="health-card">
+                <div class="health-card-value" id="health-version">—</div>
+                <div class="health-card-label">Version</div>
+              </div>
+              <div class="health-card">
+                <div class="health-card-value" id="health-uptime">—</div>
+                <div class="health-card-label">Latency</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session Info -->
+          <div class="settings-section">
+            <div class="settings-section-title">📋 Current Session</div>
+            <div class="settings-row">
+              <span class="settings-label">Session ID</span>
+              <span class="settings-value" id="settings-session-id">—</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Messages</span>
+              <span class="settings-value" id="settings-msg-count">0</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Total Sessions</span>
+              <span class="settings-value" id="settings-total-sessions">0</span>
+            </div>
+          </div>
+
+          <!-- API Configuration -->
+          <div class="settings-section">
+            <div class="settings-section-title">🔌 API Configuration</div>
+            <div class="settings-row">
+              <span class="settings-label">Backend URL</span>
+              <span class="settings-value" id="settings-backend-url">—</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Streaming</span>
+              <span class="settings-value ok">Enabled</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Safety Filters</span>
+              <span class="settings-value ok">Active</span>
+            </div>
+          </div>
+
+          <!-- About -->
+          <div class="settings-section">
+            <div class="settings-section-title">ℹ️ About</div>
+            <div class="settings-row">
+              <span class="settings-label">Application</span>
+              <span class="settings-value">Multimodal AI Assistant</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Frontend Version</span>
+              <span class="settings-value">1.0.0</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Architecture</span>
+              <span class="settings-value">FastAPI + Vanilla JS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-container -->
+  </div><!-- /main-content -->
+</div><!-- /app -->
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Hidden file input for chat image attachments -->
+<input type="file" id="chat-image-input" accept="image/*" hidden />
+
+<!-- Application Modules -->
+<script src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/events.js"></script>
+<script src="js/api.js"></script>
+<script src="js/router.js"></script>
+<script src="js/components/toast.js"></script>
+<script src="js/components/chat.js"></script>
+<script src="js/components/voice.js"></script>
+<script src="js/components/vision.js"></script>
+<script src="js/components/settings.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

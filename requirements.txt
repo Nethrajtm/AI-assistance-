@@ -1,0 +1,36 @@
+# ============================================================
+# Multimodal AI Assistant — Dependencies
+# ============================================================
+# Using minimum-version pins (>=) for Python 3.14 compatibility.
+
+# --- Core Framework ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+python-dotenv>=1.0.1
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+
+# --- HTTP / Networking ---
+httpx>=0.28.0
+sse-starlette>=2.2.0
+aiofiles>=24.1.0
+
+# --- AI Provider SDKs ---
+openai>=1.59.0
+anthropic>=0.42.0
+
+# --- Memory / Vector Store ---
+chromadb>=0.6.0
+sentence-transformers>=3.3.0
+
+# --- Audio Processing ---
+pydub>=0.25.1
+python-multipart>=0.0.20
+
+# --- Vision / Camera ---
+opencv-python-headless>=4.10.0
+Pillow>=11.0.0
+numpy>=2.2.0
+
+# --- Tool System ---
+simpleeval>=1.0.0
